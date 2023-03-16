@@ -1,0 +1,19 @@
+[tool.poetry]
+name = "hackathonyandex2023"
+version = "0.1.0"
+description = ""
+authors = ["KirillMerz <kiri11.mer31yak0v@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+selenium = "^4.8.2"
+python-dotenv = "^1.0.0"
+
+
+[tool.poetry.group.dev.dependencies]
+pylint = "^2.17.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
