@@ -1,6 +1,10 @@
+import os
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
+
+from dotenv import load_dotenv
 
 
 class DiaryNSO:
@@ -24,3 +28,20 @@ class DiaryNSO:
 
     def quit(self):
         self.driver.quit()
+
+
+def main():
+    load_dotenv()
+
+    diary = DiaryNSO(
+        login=os.getenv('DIARY_LOGIN'),
+        password=os.getenv('DIARY_PASSWORD'),
+    )
+
+    diary.auth()
+    input()
+    diary.quit()
+
+
+if __name__ == '__main__':
+    main()

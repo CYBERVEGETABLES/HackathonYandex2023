@@ -1,21 +1,18 @@
 import os
-
-from dotenv import load_dotenv
-
-from diary import DiaryNSO
+import uvicorn
 
 
 def main():
-    load_dotenv()
+    uvicorn.run(
+        'server:app',
+        host='0.0.0.0',
+        port=8080,
+        workers=os.cpu_count(),
 
-    diary = DiaryNSO(
-        login=os.getenv('DIARY_LOGIN'),
-        password=os.getenv('DIARY_PASSWORD'),
+        # TODO: выпустить сертификат с помощью Let's encrypt и настроить HTTPS
+        # ssl_keyfile='./localhost+4-key.pem',
+        # ssl_certfile='./localhost+4.pem',
     )
-
-    diary.auth()
-    input()
-    diary.quit()
 
 
 if __name__ == '__main__':
