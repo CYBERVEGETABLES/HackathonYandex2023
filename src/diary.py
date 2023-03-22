@@ -69,7 +69,7 @@ class DiaryNSO:
 
     def quit(self):
         self.driver.quit()
-#так
+#так ...
 
 def main():
     load_dotenv()
