@@ -6,12 +6,11 @@ def main():
     uvicorn.run(
         'server:app',
         host='0.0.0.0',
-        port=8080,
+        port=443,
         workers=os.cpu_count(),
 
-        # TODO: выпустить сертификат с помощью Let's encrypt и настроить HTTPS
-        # ssl_keyfile='./localhost+4-key.pem',
-        # ssl_certfile='./localhost+4.pem',
+        ssl_keyfile='./.ssl/privkey.pem',
+        ssl_certfile='./.ssl/cert.pem',
     )
 
 

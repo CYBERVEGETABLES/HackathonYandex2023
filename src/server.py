@@ -1,10 +1,12 @@
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
+
 
 app = FastAPI()
 
 
 @app.post('/')
-def main():
+async def main():
     return {
         'version': '1.0',
         'session': 'TODO',
@@ -13,3 +15,9 @@ def main():
             'end_session': 'false',
         },
     }
+
+
+@app.get('/.well-known/acme-challenge/{key}')
+async def acme_challenge(key: str):
+    return FileResponse(f'.well-known/acme-challenge/{key}')
+
