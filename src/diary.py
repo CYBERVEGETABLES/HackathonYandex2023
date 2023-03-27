@@ -1,4 +1,5 @@
 import os
+import pickle
 import time
 from datetime import datetime
 
@@ -19,18 +20,26 @@ class DiaryNSO:
         self.password = password
 
     def auth(self):
-        self.driver.get('https://school.nso.ru/authorize')
+        self.driver.get('https://school.nso.ru/')
+        
+        if os.path.exists(f'{self.login}.pkl'):
+            cookies = pickle.load(open(f'{self.login}.pkl', 'rb'))
+            for cookie in cookies:
+                self.driver.add_cookie(cookie)
+            print('INFO: Cookies loaded successfully')
+        else:
+            self.driver.get('https://school.nso.ru/authorize')
 
-        form = self.driver.find_element(By.TAG_NAME, 'form')
-        inputs = form.find_elements(By.TAG_NAME, 'input')
+            form = self.driver.find_element(By.TAG_NAME, 'form')
+            inputs = form.find_elements(By.TAG_NAME, 'input')
 
-        while self.driver.current_url != 'https://school.nso.ru/journal-app':
-            inputs[0].send_keys(self.login)
-            inputs[1].send_keys(self.password)
-
-            form.find_element(By.TAG_NAME, 'button').click()
-
-            time.sleep(1)
+            while self.driver.current_url != 'https://school.nso.ru/journal-app':
+                inputs[0].send_keys(self.login)
+                inputs[1].send_keys(self.password)
+                form.find_element(By.TAG_NAME, 'button').click()
+                time.sleep(1)
+            pickle.dump(self.driver.get_cookies(), open(f'{self.login}.pkl', 'wb'))
+            print('INFO: Cookies saved successfully')
 
     def get_next_day_schedule(self) -> str:
         def get_tomorrow_date() -> str:
@@ -39,6 +48,8 @@ class DiaryNSO:
 
         response = ''
         tomorrow_date = get_tomorrow_date()
+        
+        self.driver.get('https://school.nso.ru/journal-app')
 
         days = []
         while len(days) == 0:
@@ -67,6 +78,8 @@ class DiaryNSO:
 
         response = ''
         tomorrow_date = get_tomorrow_date()
+        
+        self.driver.get('https://school.nso.ru/journal-app')
 
         days = []
         while len(days) == 0:
@@ -120,18 +133,22 @@ class DiaryNSO:
 
 
 def main():
+    start = time.time()
     load_dotenv()
 
     diary = DiaryNSO(
         login=os.getenv('DIARY_LOGIN'),
         password=os.getenv('DIARY_PASSWORD'),
     )
-
+    
     diary.auth()
     print(diary.get_next_day_schedule())
     print(diary.get_next_day_homework())
     print(diary.final_grades_per_module())
     diary.quit()
+
+    end = time.time() - start
+    print(end)
 
 
 if __name__ == '__main__':

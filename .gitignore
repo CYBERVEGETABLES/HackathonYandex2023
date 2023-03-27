@@ -4,3 +4,5 @@ __pycache__/
 *geckodriver.log
 .env
 .ssl/
+
+*.pkl
