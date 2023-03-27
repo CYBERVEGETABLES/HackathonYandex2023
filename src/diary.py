@@ -55,8 +55,8 @@ class DiaryNSO:
                 if len(subjects) == 0:
                     return 'На завтра уроков не найдено'
 
-                response = 'Завтра у Вас будут следующие предметы: ' + \
-                           ', '.join([subject.text for subject in subjects])
+                response = 'Завтра у Вас будут следующие предметы:\n' + \
+                           '\n'.join([subject.text for subject in subjects])
 
         return response
 
