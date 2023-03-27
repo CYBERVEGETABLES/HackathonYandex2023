@@ -10,7 +10,7 @@ RUN apk update && \
     apk --no-cache add curl firefox && \
     rm -rf /var/cache/apk/*
 
-COPY pyproject.toml poetry.lock .
+COPY pyproject.toml poetry.lock ./
 COPY src/ src/
 
 RUN curl -sSL https://install.python-poetry.org | python3 - && \
