@@ -5,6 +5,7 @@ from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
+from selenium.common.exceptions import NoSuchElementException
 
 from dotenv import load_dotenv
 
@@ -59,6 +60,40 @@ class DiaryNSO:
 
         return response
 
+    def get_next_day_homework(self) -> str:
+        def get_tomorrow_date() -> str:
+            """ Returns tomorrow date in format '%d.%m' """
+            return f'{int(datetime.today().strftime("%d")) + 1}.{datetime.today().strftime("%m")}'
+
+        response = ''
+        tomorrow_date = get_tomorrow_date()
+
+        days = []
+        while len(days) == 0:
+            days = self.driver.find_elements(By.CLASS_NAME, 'dnevnik-day')
+
+        for day in days:
+            current_day_date = day.find_element(
+                By.CLASS_NAME, 'dnevnik-day__title'
+            ).text.split(', ')[1]
+
+            if current_day_date == tomorrow_date:
+                lessons = day.find_elements(By.CLASS_NAME, 'dnevnik-lesson')
+
+                for lesson in lessons:
+                    try:
+                        homework = lesson.find_element(By.CLASS_NAME, 'dnevnik-lesson__task')
+                    except NoSuchElementException:
+                        continue
+
+                    subject = lesson.find_element(By.CLASS_NAME, 'js-rt_licey-dnevnik-subject').text
+                    response += f'{subject}: {homework.text}\n'
+
+        if response == '':
+            return 'Домашнего задания на завтра не найдено'
+
+        return f'Домашнее задание на завтра:\n{response}'
+
     def quit(self):
         self.driver.quit()
 
@@ -73,6 +108,7 @@ def main():
 
     diary.auth()
     print(diary.get_next_day_schedule())
+    print(diary.get_next_day_homework())
     diary.quit()
 
 
