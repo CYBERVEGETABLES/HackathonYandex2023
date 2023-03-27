@@ -11,10 +11,11 @@ RUN apk update && \
     rm -rf /var/cache/apk/*
 
 COPY pyproject.toml poetry.lock ./
-COPY src/ src/
 
 RUN curl -sSL https://install.python-poetry.org | python3 - && \
     poetry install --no-interaction --no-cache --without dev
+
+COPY src/ src/
 
 ENTRYPOINT ["poetry", "run", "python"]
 
