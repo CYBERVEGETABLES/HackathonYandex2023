@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 class DiaryNSO:
     def __init__(self, login: str, password: str):
         options = Options()
-        # options.add_argument('-headless')
+        options.add_argument('-headless')
         self.driver = webdriver.Firefox(options=options)
         self.login = login
         self.password = password
@@ -94,6 +94,27 @@ class DiaryNSO:
 
         return f'Домашнее задание на завтра:\n{response}'
 
+    def final_grades_per_module(self) -> dict[str: float]:
+        """ Это итоговые оценки по предметам за четверть без пустых хуёв
+            короче, желаю удачи допилить дальше, я бессилен, пойду подрочу чтоль
+            сделали в виде списка, чтобы легче дальше было делать"""
+        res = {}
+        self.driver.get('https://school.nso.ru/journal-student-grades-action')
+        subject = self.driver.find_elements(By.CLASS_NAME, 'cell')
+        for i in subject:
+            text = i.text.strip()
+            if text is None:
+                continue
+            if '.' in text:
+                try:
+                    float(text)
+                except TypeError:
+                    continue
+            else:
+                continue
+            res[i.get_attribute("name")] = float(text)
+        return res
+
     def quit(self):
         self.driver.quit()
 
@@ -109,6 +130,7 @@ def main():
     diary.auth()
     print(diary.get_next_day_schedule())
     print(diary.get_next_day_homework())
+    print(diary.final_grades_per_module())
     diary.quit()
 
 
