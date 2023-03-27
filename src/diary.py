@@ -21,11 +21,12 @@ class DiaryNSO:
 
     def auth(self):
         self.driver.get('https://school.nso.ru/')
-        
+
         if os.path.exists(f'{self.login}.pkl'):
-            cookies = pickle.load(open(f'{self.login}.pkl', 'rb'))
-            for cookie in cookies:
-                self.driver.add_cookie(cookie)
+            with open(f'{self.login}.pkl', 'rb') as f:
+                cookies = pickle.load(f)
+                for cookie in cookies:
+                    self.driver.add_cookie(cookie)
             print('INFO: Cookies loaded successfully')
         else:
             self.driver.get('https://school.nso.ru/authorize')
@@ -38,7 +39,8 @@ class DiaryNSO:
                 inputs[1].send_keys(self.password)
                 form.find_element(By.TAG_NAME, 'button').click()
                 time.sleep(1)
-            pickle.dump(self.driver.get_cookies(), open(f'{self.login}.pkl', 'wb'))
+            with open(f'{self.login}.pkl', 'wb') as f:
+                pickle.dump(self.driver.get_cookies(), f)
             print('INFO: Cookies saved successfully')
 
     def get_next_day_schedule(self) -> str:
@@ -127,6 +129,41 @@ class DiaryNSO:
                 continue
             res[i.get_attribute("name")] = float(text)
         return res
+    
+    def get_all_marks(self) -> dict:
+        res = []
+        self.driver.get('https://school.nso.ru/journal-student-grades-action')
+        subject = self.driver.find_elements(By.CLASS_NAME, 'cell')
+        for i in subject:
+            el = None
+            try:
+                el = i.find_element(By.CLASS_NAME, 'cell-data')
+            except:
+                continue
+            if el.text.strip() == '':
+                continue
+
+            source_mark = el.text.strip().split('✕')
+            
+            if '.' in source_mark[0]:
+                continue
+            mark = ('Н',)
+            if '/' in source_mark[0]:
+                mark = tuple(map(int, source_mark[0].split('/')))
+            elif source_mark[0] != 'Н':
+                if '-' in source_mark[0]:
+                    mark = ((int(source_mark[0][:-1]), '-'),)
+                else:
+                    mark = (int(source_mark[0]),)
+            res.append(
+                {
+                    'subject': i.get_attribute("name"),
+                    'mark': mark,
+                    'koef': int(source_mark[1]) if len(source_mark) == 2 else 1,
+                    'date': i.get_attribute("mark_date").replace('-', '.')
+                }
+            )
+        return res
 
     def quit(self):
         self.driver.quit()
@@ -145,6 +182,7 @@ def main():
     print(diary.get_next_day_schedule())
     print(diary.get_next_day_homework())
     print(diary.final_grades_per_module())
+    print(diary.get_all_marks())
     diary.quit()
 
     end = time.time() - start
