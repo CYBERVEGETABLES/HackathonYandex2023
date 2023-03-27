@@ -20,4 +20,3 @@ async def main():
 @app.get('/.well-known/acme-challenge/{key}')
 async def acme_challenge(key: str):
     return FileResponse(f'.well-known/acme-challenge/{key}')
-
