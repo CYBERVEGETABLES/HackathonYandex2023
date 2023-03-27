@@ -23,8 +23,8 @@ class DiaryNSO:
         self.driver.get('https://school.nso.ru/')
 
         if os.path.exists(f'{self.login}.pkl'):
-            with open(f'{self.login}.pkl', 'rb') as f:
-                cookies = pickle.load(f)
+            with open(f'{self.login}.pkl', 'rb') as file:
+                cookies = pickle.load(file)
                 for cookie in cookies:
                     self.driver.add_cookie(cookie)
             print('INFO: Cookies loaded successfully')
@@ -39,8 +39,8 @@ class DiaryNSO:
                 inputs[1].send_keys(self.password)
                 form.find_element(By.TAG_NAME, 'button').click()
                 time.sleep(1)
-            with open(f'{self.login}.pkl', 'wb') as f:
-                pickle.dump(self.driver.get_cookies(), f)
+            with open(f'{self.login}.pkl', 'wb') as file:
+                pickle.dump(self.driver.get_cookies(), file)
             print('INFO: Cookies saved successfully')
 
     def get_next_day_schedule(self) -> str:
@@ -50,7 +50,7 @@ class DiaryNSO:
 
         response = ''
         tomorrow_date = get_tomorrow_date()
-        
+
         self.driver.get('https://school.nso.ru/journal-app')
 
         days = []
@@ -80,7 +80,7 @@ class DiaryNSO:
 
         response = ''
         tomorrow_date = get_tomorrow_date()
-        
+
         self.driver.get('https://school.nso.ru/journal-app')
 
         days = []
@@ -129,22 +129,22 @@ class DiaryNSO:
                 continue
             res[i.get_attribute("name")] = float(text)
         return res
-    
+
     def get_all_marks(self) -> dict:
         res = []
         self.driver.get('https://school.nso.ru/journal-student-grades-action')
         subject = self.driver.find_elements(By.CLASS_NAME, 'cell')
         for i in subject:
-            el = None
+            element = None
             try:
-                el = i.find_element(By.CLASS_NAME, 'cell-data')
-            except:
+                element = i.find_element(By.CLASS_NAME, 'cell-data')
+            except NoSuchElementException:
                 continue
-            if el.text.strip() == '':
+            if element.text.strip() == '':
                 continue
 
-            source_mark = el.text.strip().split('✕')
-            
+            source_mark = element.text.strip().split('✕')
+
             if '.' in source_mark[0]:
                 continue
             mark = ('Н',)
@@ -177,7 +177,7 @@ def main():
         login=os.getenv('DIARY_LOGIN'),
         password=os.getenv('DIARY_PASSWORD'),
     )
-    
+
     diary.auth()
     print(diary.get_next_day_schedule())
     print(diary.get_next_day_homework())
