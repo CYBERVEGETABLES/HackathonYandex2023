@@ -30,6 +30,6 @@ def next_day_homework(user_id: str) -> str:
     return messages.MESSAGE_DIARY_LOADING
 
 
-def create_user_diary(user_id):
+def create_user_diary(user_id) -> None:
     diary_login, diary_password = database.user_get_diary_data(user_id)
     DIARIES[user_id] = DiaryNSO(diary_login, diary_password)
