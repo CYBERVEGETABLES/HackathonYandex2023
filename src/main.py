@@ -7,7 +7,7 @@ def main():
         'server:app',
         host='0.0.0.0',
         port=443,
-        workers=(os.cpu_count() // 4),
+        workers=os.cpu_count(),
         # reload=True,
 
         ssl_keyfile='./.ssl/privkey.pem',
