@@ -29,11 +29,6 @@ async def main(request: Request):
         user_id=request_data['session']['user']['user_id']
     )
 
-    # TODO: REMOVE IN PROD
-    print(f'{user_id=}')
-    print(f'{user_new=}')
-    print(f'{command=}')
-
     return yandex.build_response(text=response, session_id=request_data['session']['session_id'])
 
 
