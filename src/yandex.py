@@ -3,7 +3,7 @@ import re
 import database
 import messages
 from recognize import recognizer
-from skills import register
+from yandex_fuc import register
 
 
 def build_response(text: str, session_id: str) -> dict:

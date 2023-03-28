@@ -19,8 +19,8 @@ def main():
         workers=os.cpu_count(),
         reload=True,
 
-        # ssl_keyfile='./.ssl/privkey.pem',
-        # ssl_certfile='./.ssl/fullchain.pem',
+        ssl_keyfile='./.ssl/privkey.pem',
+        ssl_certfile='./.ssl/fullchain.pem',
     )
 
 
