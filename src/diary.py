@@ -37,11 +37,18 @@ class DiaryNSO:
             form = self.driver.find_element(By.TAG_NAME, 'form')
             inputs = form.find_elements(By.TAG_NAME, 'input')
 
+            counter = 0
             while self.driver.current_url != 'https://school.nso.ru/journal-app':
                 inputs[0].send_keys(self.login)
                 inputs[1].send_keys(self.password)
                 form.find_element(By.TAG_NAME, 'button').click()
                 time.sleep(1)
+                counter += 1
+
+                if counter == 5:
+                    return False
+
+            return True
 
             with open(f'data/pkl/{self.login}.pkl', 'wb') as file:
                 pickle.dump(self.driver.get_cookies(), file)
