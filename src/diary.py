@@ -48,12 +48,12 @@ class DiaryNSO:
                 if counter == 5:
                     return False
 
-            return True
-
             with open(f'data/pkl/{self.login}.pkl', 'wb') as file:
                 pickle.dump(self.driver.get_cookies(), file)
 
             print('INFO: Cookies saved successfully')
+
+            return True
 
     def get_next_day_schedule(self) -> str:
         def get_tomorrow_date() -> str:
