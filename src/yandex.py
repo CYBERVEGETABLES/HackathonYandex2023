@@ -16,7 +16,7 @@ def build_response(text: str, session_id: str) -> dict:
     }
 
 
-REGISTER_DATA_REGEXP = re.compile(r'^\w\s\w$')
+REGISTER_DATA_REGEXP = re.compile(r'^\w+\s+\w+$')
 
 
 def handle(command: str, user_id: str) -> str:
@@ -25,7 +25,7 @@ def handle(command: str, user_id: str) -> str:
     if not registered:
         return messages.MESSAGE_START
 
-    if 'домашн' in command:
+    if 'домаш' in command:
         return yandex_functions.next_day_homework(user_id)
 
     if 'расписание' in command:
