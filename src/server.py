@@ -32,6 +32,7 @@ async def main(request: Request):
     return yandex.build_response(text=response, session_id=request_data['session']['session_id'])
 
 
-@app.get('/.well-known/acme-challenge/{key}')
-async def acme_challenge(key: str):
-    return FileResponse(f'.well-known/acme-challenge/{key}')
+# For Let's Encrypt
+# @app.get('/.well-known/acme-challenge/{key}')
+# async def acme_challenge(key: str):
+#     return FileResponse(f'.well-known/acme-challenge/{key}')

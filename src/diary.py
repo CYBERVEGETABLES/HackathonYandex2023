@@ -3,6 +3,8 @@ import pickle
 import time
 from datetime import datetime
 
+from typing import Any
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
@@ -15,14 +17,15 @@ class DiaryNSO:
     def __init__(self, login: str, password: str):
         options = Options()
         options.add_argument('-headless')
+
         self.driver = webdriver.Firefox(options=options)
         self.login = login
         self.password = password
 
-    def auth(self):
         self.driver.get('https://school.nso.ru/')
 
-        if os.path.exists(f'{self.login}.pkl'):
+    def auth(self):
+        if os.path.exists(f'data/pkl/{self.login}.pkl'):
             with open(f'{self.login}.pkl', 'rb') as file:
                 cookies = pickle.load(file)
                 for cookie in cookies:
@@ -39,8 +42,10 @@ class DiaryNSO:
                 inputs[1].send_keys(self.password)
                 form.find_element(By.TAG_NAME, 'button').click()
                 time.sleep(1)
-            with open(f'{self.login}.pkl', 'wb') as file:
+
+            with open(f'data/pkl/{self.login}.pkl', 'wb') as file:
                 pickle.dump(self.driver.get_cookies(), file)
+
             print('INFO: Cookies saved successfully')
 
     def get_next_day_schedule(self) -> str:
@@ -112,7 +117,7 @@ class DiaryNSO:
     def final_grades_per_module(self) -> dict[str: float]:
         """ Это итоговые оценки по предметам за четверть без пустых хуёв
             короче, желаю удачи допилить дальше, я бессилен, пойду подрочу чтоль
-            сделали в виде списка, чтобы легче дальше было делать"""
+            сделали в виде списка, чтобы легче дальше было делать"""  # АХВХАХВАХ СЕРЕГА ТЫ ЕБЛАН Я ТЕБЯ ОБОЖАЮ
         res = {}
         self.driver.get('https://school.nso.ru/journal-student-grades-action')
         subject = self.driver.find_elements(By.CLASS_NAME, 'cell')
@@ -130,12 +135,11 @@ class DiaryNSO:
             res[i.get_attribute("name")] = float(text)
         return res
 
-    def get_all_marks(self) -> dict:
+    def get_all_marks(self) -> Any:
         res = []
         self.driver.get('https://school.nso.ru/journal-student-grades-action')
         subject = self.driver.find_elements(By.CLASS_NAME, 'cell')
         for i in subject:
-            element = None
             try:
                 element = i.find_element(By.CLASS_NAME, 'cell-data')
             except NoSuchElementException:
@@ -171,6 +175,7 @@ class DiaryNSO:
 
 def main():
     start = time.time()
+
     load_dotenv()
 
     diary = DiaryNSO(
@@ -179,10 +184,12 @@ def main():
     )
 
     diary.auth()
+
     print(diary.get_next_day_schedule())
     print(diary.get_next_day_homework())
     print(diary.final_grades_per_module())
     print(diary.get_all_marks())
+
     diary.quit()
 
     end = time.time() - start
