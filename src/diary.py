@@ -24,7 +24,7 @@ class DiaryNSO:
 
         self.driver.get('https://school.nso.ru/')
 
-    def auth(self):
+    def auth(self) -> bool:
         if os.path.exists(f'data/pkl/{self.login}.pkl'):
             with open(f'{self.login}.pkl', 'rb') as file:
                 cookies = pickle.load(file)
@@ -53,7 +53,7 @@ class DiaryNSO:
 
             print('INFO: Cookies saved successfully')
 
-            return True
+        return True
 
     def get_next_day_schedule(self) -> str:
         def get_tomorrow_date() -> str:
