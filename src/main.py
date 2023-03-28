@@ -3,15 +3,20 @@ import uvicorn
 
 
 def main():
+    try:
+        os.makedirs('data')
+    except FileExistsError:
+        pass
+    
     uvicorn.run(
         'server:app',
         host='0.0.0.0',
         port=443,
         workers=os.cpu_count(),
-        # reload=True,
+        reload=True,
 
-        ssl_keyfile='./.ssl/privkey.pem',
-        ssl_certfile='./.ssl/fullchain.pem',
+        # ssl_keyfile='./.ssl/privkey.pem',
+        # ssl_certfile='./.ssl/fullchain.pem',
     )
 
 
