@@ -25,7 +25,7 @@ async def main(request: Request):
         )
 
     response = yandex.handle(
-        command=request_data['request']['command'],
+        command=request_data['request']['original_utterance'],
         user_id=request_data['session']['user']['user_id']
     )
 
