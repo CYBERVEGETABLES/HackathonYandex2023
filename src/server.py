@@ -1,4 +1,5 @@
 import json
+from typing import Any
 
 from fastapi import FastAPI
 from fastapi import Request
@@ -12,7 +13,7 @@ app = FastAPI()
 
 
 @app.post('/')
-async def main(request: Request):
+async def main(request: Request) -> Any:
     request_data = json.loads(
         await request.body()
     )

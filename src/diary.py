@@ -3,8 +3,6 @@ import pickle
 import time
 from datetime import datetime
 
-from typing import Any
-
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
@@ -126,6 +124,7 @@ class DiaryNSO:
             короче, желаю удачи допилить дальше, я бессилен, пойду подрочу чтоль
             сделали в виде списка, чтобы легче дальше было делать"""
         # АХВХАХВАХ СЕРЕГА ТЫ ЕБЛАН Я ТЕБЯ ОБОЖАЮ
+        # А я ему помог)))
 
         res = {}
         self.driver.get('https://school.nso.ru/journal-student-grades-action')
@@ -144,7 +143,7 @@ class DiaryNSO:
             res[i.get_attribute("name")] = float(text)
         return res
 
-    def get_all_marks(self) -> Any:
+    def get_all_marks(self) -> list[dict]:
         res = []
         self.driver.get('https://school.nso.ru/journal-student-grades-action')
         subject = self.driver.find_elements(By.CLASS_NAME, 'cell')
