@@ -1,0 +1,17 @@
+{
+    "что заданно на завтра": "next_day_homework",
+    "какое дз на завтра": "next_day_homework",
+    "дз на завтра": "next_day_homework",
+    "домашка на завтра": "next_day_homework",
+    "что заданно": "next_day_homework",
+    "какое дз": "next_day_homework",
+    "что по дз": "next_day_homework",
+
+    "расписание на завтра": "next_day_schedule",
+    "что по завтрашнему расписанию": "next_day_schedule",
+    "что будет завтра": "next_day_schedule",
+    "какое расписание на завтра": "next_day_schedule",
+    "какие завтра уроки": "next_day_schedule",
+    "какие завтра предметы": "next_day_schedule",
+    "к чему завтра готовиться": "next_day_schedule"
+}

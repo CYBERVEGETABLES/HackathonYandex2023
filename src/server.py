@@ -25,7 +25,7 @@ async def main(request: Request) -> Any:
             session_id=request_data['session']['session_id']
         )
 
-    response = yandex.handle(
+    response = yandex.handler(
         command=request_data['request']['original_utterance'],
         user_id=request_data['session']['user']['user_id']
     )

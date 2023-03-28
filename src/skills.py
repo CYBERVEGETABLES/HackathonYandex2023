@@ -15,6 +15,7 @@ def register(user_id: str, diary_data: str) -> str:
 
 
 def next_day_schedule(user_id: str) -> str:
+    print(2)
     if user_id in DIARIES.keys():
         return DIARIES[user_id].get_next_day_schedule()
 
@@ -23,6 +24,7 @@ def next_day_schedule(user_id: str) -> str:
 
 
 def next_day_homework(user_id: str) -> str:
+    print(1)
     if user_id in DIARIES.keys():
         return DIARIES[user_id].get_next_day_homework()
 

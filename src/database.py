@@ -24,7 +24,7 @@ def user_register(user_id: str, diary_login: str, diary_password: str) -> bool:
     return True
 
 
-def user_get_diary_data(user_id: str) -> tuple[str, str]:
+def user_get_diary_data(user_id: str) -> tuple[str, str] | None:
     sql_query = 'SELECT diary_login, diary_password FROM users WHERE id={}'
     res = cur.execute(sql_query.format(user_id)).fetchone()
     return res

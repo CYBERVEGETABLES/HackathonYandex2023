@@ -1,8 +1,9 @@
 import re
 
 import database
-import yandex_functions
 import messages
+from recognize import recognizer
+from skills import register
 
 
 def build_response(text: str, session_id: str) -> dict:
@@ -19,19 +20,17 @@ def build_response(text: str, session_id: str) -> dict:
 REGISTER_DATA_REGEXP = re.compile(r'^\w+\s+\w+$')
 
 
-def handle(command: str, user_id: str) -> str:
+def handler(command: str, user_id: str) -> str:
     registered = database.user_is_registered(user_id)
 
     if not registered:
         return messages.MESSAGE_START
+    elif REGISTER_DATA_REGEXP.match(command):
+        return register(user_id, command)
+    
+    answ = recognizer.get_answer(command)
 
-    if 'домаш' in command:
-        return yandex_functions.next_day_homework(user_id)
-
-    if 'расписание' in command:
-        return yandex_functions.next_day_schedule(user_id)
-
-    if REGISTER_DATA_REGEXP.match(command):
-        return yandex_functions.register(user_id, command)
-
-    return messages.MESSAGE_UNKNOWN_COMMAND
+    if type(answ) is tuple:
+        return answ[-1](user_id)
+    elif answ:
+        return answ
