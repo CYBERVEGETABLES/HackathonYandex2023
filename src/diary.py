@@ -117,7 +117,9 @@ class DiaryNSO:
     def final_grades_per_module(self) -> dict[str: float]:
         """ Это итоговые оценки по предметам за четверть без пустых хуёв
             короче, желаю удачи допилить дальше, я бессилен, пойду подрочу чтоль
-            сделали в виде списка, чтобы легче дальше было делать"""  # АХВХАХВАХ СЕРЕГА ТЫ ЕБЛАН Я ТЕБЯ ОБОЖАЮ
+            сделали в виде списка, чтобы легче дальше было делать"""
+        # АХВХАХВАХ СЕРЕГА ТЫ ЕБЛАН Я ТЕБЯ ОБОЖАЮ
+
         res = {}
         self.driver.get('https://school.nso.ru/journal-student-grades-action')
         subject = self.driver.find_elements(By.CLASS_NAME, 'cell')

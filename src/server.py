@@ -2,7 +2,7 @@ import json
 
 from fastapi import FastAPI
 from fastapi import Request
-from fastapi.responses import FileResponse
+# from fastapi.responses import FileResponse
 
 import messages
 import yandex

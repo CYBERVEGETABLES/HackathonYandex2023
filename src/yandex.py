@@ -28,11 +28,10 @@ def handle(command: str, user_id: str) -> str:
     if 'домашн' in command:
         return yandex_functions.next_day_homework(user_id)
 
-    elif 'расписание' in command:
+    if 'расписание' in command:
         return yandex_functions.next_day_schedule(user_id)
 
-    elif REGISTER_DATA_REGEXP.match(command):
+    if REGISTER_DATA_REGEXP.match(command):
         return yandex_functions.register(user_id, command)
 
-    else:
-        return messages.MESSAGE_UNKNOWN_COMMAND
+    return messages.MESSAGE_UNKNOWN_COMMAND
