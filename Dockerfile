@@ -7,12 +7,11 @@ ENV PATH="/root/.local/bin:$PATH"
 
 RUN apk update && \
     apk upgrade && \
-    apk --no-cache add curl firefox gcc && \
+    apk --no-cache add curl firefox && \
+    apk add make automake gcc g++ subversion python3-dev && \
     rm -rf /var/cache/apk/*
 
 COPY pyproject.toml poetry.lock ./
-
-RUN pip install --upgrade pip
 
 RUN curl -sSL https://install.python-poetry.org | python3 - && \
     poetry install --no-interaction --no-cache --without dev
