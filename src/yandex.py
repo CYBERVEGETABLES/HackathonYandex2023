@@ -9,7 +9,7 @@ def build_response(text: str, session_id: str) -> dict:
         'version': '1.0',
         'session': session_id,
         'response': {
-            'text': text,
+            'text': str(text),
             'end_session': 'false',
         },
     }
@@ -23,8 +23,11 @@ def handler(command: str, user_id: str) -> str | None:
         return register(user_id, command)
 
     answer = recognizer.get_answer(command)
+    print(answer)
 
     if isinstance(answer, tuple):
-        return answer[-1](user_id)
+        res =  answer[-1](user_id, text=answer[0])
+        print(res)
+        return res
 
     return answer

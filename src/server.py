@@ -21,13 +21,23 @@ async def main(request: Request) -> Any:
 
     user_id = request_data['session']['user']['user_id']
     user_registered = database.user_is_registered(user_id)
+    print(user_registered)
+    
+    if yandex.REGISTER_DATA_REGEXP.match(request_data['request']['original_utterance']):
+        response = yandex.register(user_id, request_data['request']['original_utterance'])
+        return yandex.build_response(text=response, session_id=request_data['session']['session_id'])
+    
+    if not user_registered:
+        text = messages.MESSAGE_START_USER_NOT_REGISTERED
+        return yandex.build_response(
+            text=text,
+            session_id=request_data['session']['session_id']
+        )
 
     # if chat just started
     if request_data['session']['new']:
         if user_registered:
             text = messages.MESSAGE_START_USER_REGISTERED
-        else:
-            text = messages.MESSAGE_START_USER_NOT_REGISTERED
 
         return yandex.build_response(
             text=text,

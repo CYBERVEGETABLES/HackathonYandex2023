@@ -2,6 +2,8 @@ import os
 import pickle
 import time
 from datetime import datetime
+from threading import Thread
+from typing import NoReturn
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -25,6 +27,23 @@ class DiaryNSO:
 
         self.login = login
         self.password = password
+        
+        Thread(target=self._update_controller).start()
+            
+    def _update_controller(self) -> NoReturn:
+        while True:
+            threads = []
+            for func in (
+                self.get_next_day_schedule,
+                self.get_next_day_homework,
+                self.get_final_grades_per_module,
+                self.get_all_marks
+            ):
+                threads.append(Thread(target=func))
+                threads[-1].start()
+            for thread in threads:
+                thread.join()
+            time.sleep(60 * 30)
 
     def auth(self) -> bool:
         if os.path.exists(f'data/pkl/{self.login}.pkl'):
@@ -59,17 +78,23 @@ class DiaryNSO:
 
         return True
 
-    def get_next_day_schedule(self) -> str:
+    def get_next_day_schedule(self) -> None:
+        self.next_day_schedule = None
+        
         response = ''
         tomorrow_date = get_tomorrow_date()
 
+        print(444)
         self.driver.get('https://school.nso.ru/journal-app')
+        print(44)
 
         days = []
         while len(days) == 0:
             days = self.driver.find_elements(By.CLASS_NAME, 'dnevnik-day')
+            time.sleep(2)
 
         for day in days:
+            print(4)
             current_day_date = day.find_element(
                 By.CLASS_NAME, 'dnevnik-day__title'
             ).text.split(', ')[1]
@@ -83,9 +108,11 @@ class DiaryNSO:
                 response = 'Завтра у Вас будут следующие предметы:\n' + \
                            '\n'.join([subject.text for subject in subjects])
 
-        return response
+        self.next_day_schedule = response
 
-    def get_next_day_homework(self) -> str:
+    def get_next_day_homework(self) -> None:
+        self.next_day_homework = None
+        
         response = ''
         tomorrow_date = get_tomorrow_date()
 
@@ -95,6 +122,7 @@ class DiaryNSO:
         days = []
         while len(days) == 0:
             days = self.driver.find_elements(By.CLASS_NAME, 'dnevnik-day')
+            time.sleep(2)
 
         for day in days:
             current_day_date = day.find_element(
@@ -116,14 +144,15 @@ class DiaryNSO:
         if response == '':
             return 'Домашнего задания на завтра не найдено'
 
-        return f'Домашнее задание на завтра:\n{response}'
+        self.next_day_homework = f'Домашнее задание на завтра:\n{response}'
 
-    def final_grades_per_module(self) -> dict[str: float]:
+    def get_final_grades_per_module(self) -> None:
         """ Это итоговые оценки по предметам за четверть без пустых хуёв
             короче, желаю удачи допилить дальше, я бессилен, пойду подрочу чтоль
             сделали в виде списка, чтобы легче дальше было делать"""
         # АХВХАХВАХ СЕРЕГА ТЫ ЕБЛАН Я ТЕБЯ ОБОЖАЮ
         # А я ему помог)))
+        self.final_grades_per_module = None
 
         res = {}
 
@@ -143,9 +172,11 @@ class DiaryNSO:
             else:
                 continue
             res[i.get_attribute("name")] = float(text)
-        return res
+        self.final_grades_per_module = res
 
-    def get_all_marks(self) -> list[dict]:
+    def get_all_marks(self) -> None:
+        self.all_marks = None
+        
         res = []
 
         if self.driver.current_url != 'https://school.nso.ru/journal-student-grades-action':
@@ -180,7 +211,7 @@ class DiaryNSO:
                     'date': i.get_attribute("mark_date").replace('-', '.')
                 }
             )
-        return res
+        self.all_marks = res
 
     def quit(self):
         self.driver.quit()
@@ -199,9 +230,9 @@ def main():
     diary.auth()
 
     print(diary.get_next_day_schedule())
-    print(diary.get_next_day_homework())
-    print(diary.final_grades_per_module())
-    print(diary.get_all_marks())
+    # print(diary.get_next_day_homework())
+    # print(diary.final_grades_per_module())
+    # print(diary.get_all_marks())
 
     diary.quit()
 
