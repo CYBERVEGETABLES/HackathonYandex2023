@@ -34,6 +34,10 @@ def user_get_diary_data(user_id: str) -> tuple[str, str] | None:
 
 def init() -> None:
     conn.execute(
-        'CREATE TABLE IF NOT EXISTS users(id TEXT PRIMARY KEY, diary_login TEXT, diary_password TEXT)'
+        'CREATE TABLE IF NOT EXISTS users('
+        'id TEXT PRIMARY KEY,'
+        'diary_login TEXT,'
+        'diary_password TEXT'
+        ')'
     )
     conn.commit()
