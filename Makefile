@@ -6,3 +6,6 @@ docker-build:
 
 docker-run:
 	docker run --rm alice_skill_study_nr
+
+compose-up:
+	docker-compose -f ./docker-compose.yml up --build
