@@ -7,7 +7,7 @@ from diary import DiaryNSO
 def create_user_diary(user_id) -> None:
     diary_login, diary_password = database.user_get_diary_data(user_id)
     DIARIES[user_id] = DiaryNSO(diary_login, diary_password)
-    
+
 
 def register(user_id: str, diary_data: str) -> str:
     success = database.user_register(user_id, *diary_data.split())

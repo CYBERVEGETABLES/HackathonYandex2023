@@ -29,8 +29,10 @@ class Recognizer:
         if func:
             answer = answer.replace(func_name, '').lstrip()
             return answer, func
-        else:
-            return answer
+        return answer
+    
+    def get_skill_by_func_name(self, name: str) -> Callable:
+        return getattr(skills, name)
 
 
 recognizer = Recognizer('data_set.json')
