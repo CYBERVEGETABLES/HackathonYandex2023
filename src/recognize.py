@@ -30,7 +30,7 @@ class Recognizer:
             answer = answer.replace(func_name, '').lstrip()
             return answer, func
         return answer
-    
+
     def get_skill_by_func_name(self, name: str) -> Callable:
         return getattr(skills, name)
 
