@@ -7,10 +7,12 @@ from sklearn.linear_model import LogisticRegression
 import skills
 
 
+def get_skill_by_func_name(name: str) -> Callable:
+    return getattr(skills, name)
+
+
 class Recognizer:
-    def __init__(
-        self, file_name: str
-    ) -> None:
+    def __init__(self, file_name: str) -> None:
         with open(file_name, 'r', encoding='utf-8') as file:
             self.data_learn = load(file)
 
@@ -31,8 +33,5 @@ class Recognizer:
             return answer, func
         return answer
 
-    def get_skill_by_func_name(self, name: str) -> Callable:
-        return getattr(skills, name)
 
-
-recognizer = Recognizer('data_set.json')
+recognizer = Recognizer('dataset.json')

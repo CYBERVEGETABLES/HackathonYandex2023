@@ -11,24 +11,29 @@ from selenium.common.exceptions import NoSuchElementException
 from dotenv import load_dotenv
 
 
+def get_tomorrow_date() -> str:
+    """ Returns tomorrow date in format '%d.%m' """
+    return f'{int(datetime.today().strftime("%d")) + 1}.{datetime.today().strftime("%m")}'
+
+
 class DiaryNSO:
     def __init__(self, login: str, password: str):
         options = Options()
         options.add_argument('-headless')
 
         self.driver = webdriver.Firefox(options=options)
+
         self.login = login
         self.password = password
 
-        self.driver.get('https://school.nso.ru/')
-
     def auth(self) -> bool:
         if os.path.exists(f'data/pkl/{self.login}.pkl'):
-            with open(f'{self.login}.pkl', 'rb') as file:
+            with open(f'data/pkl/{self.login}.pkl', 'rb') as file:
                 cookies = pickle.load(file)
                 for cookie in cookies:
                     self.driver.add_cookie(cookie)
             print('INFO: Cookies loaded successfully')
+
         else:
             self.driver.get('https://school.nso.ru/authorize')
 
@@ -40,9 +45,10 @@ class DiaryNSO:
                 inputs[0].send_keys(self.login)
                 inputs[1].send_keys(self.password)
                 form.find_element(By.TAG_NAME, 'button').click()
-                time.sleep(1)
-                counter += 1
 
+                time.sleep(1)
+
+                counter += 1
                 if counter == 5:
                     return False
 
@@ -54,10 +60,6 @@ class DiaryNSO:
         return True
 
     def get_next_day_schedule(self) -> str:
-        def get_tomorrow_date() -> str:
-            """ Returns tomorrow date in format '%d.%m' """
-            return f'{int(datetime.today().strftime("%d")) + 1}.{datetime.today().strftime("%m")}'
-
         response = ''
         tomorrow_date = get_tomorrow_date()
 
@@ -84,14 +86,11 @@ class DiaryNSO:
         return response
 
     def get_next_day_homework(self) -> str:
-        def get_tomorrow_date() -> str:
-            """ Returns tomorrow date in format '%d.%m' """
-            return f'{int(datetime.today().strftime("%d")) + 1}.{datetime.today().strftime("%m")}'
-
         response = ''
         tomorrow_date = get_tomorrow_date()
 
-        self.driver.get('https://school.nso.ru/journal-app')
+        if self.driver.current_url != 'https://school.nso.ru/journal-app':
+            self.driver.get('https://school.nso.ru/journal-app')
 
         days = []
         while len(days) == 0:
@@ -124,10 +123,13 @@ class DiaryNSO:
             короче, желаю удачи допилить дальше, я бессилен, пойду подрочу чтоль
             сделали в виде списка, чтобы легче дальше было делать"""
         # АХВХАХВАХ СЕРЕГА ТЫ ЕБЛАН Я ТЕБЯ ОБОЖАЮ
-        ## А я ему помог)))
+        # А я ему помог)))
 
         res = {}
-        self.driver.get('https://school.nso.ru/journal-student-grades-action')
+
+        if self.driver.current_url != 'https://school.nso.ru/journal-student-grades-action':
+            self.driver.get('https://school.nso.ru/journal-student-grades-action')
+
         subject = self.driver.find_elements(By.CLASS_NAME, 'cell')
         for i in subject:
             text = i.text.strip()
@@ -145,7 +147,10 @@ class DiaryNSO:
 
     def get_all_marks(self) -> list[dict]:
         res = []
-        self.driver.get('https://school.nso.ru/journal-student-grades-action')
+
+        if self.driver.current_url != 'https://school.nso.ru/journal-student-grades-action':
+            self.driver.get('https://school.nso.ru/journal-student-grades-action')
+
         subject = self.driver.find_elements(By.CLASS_NAME, 'cell')
         for i in subject:
             try:

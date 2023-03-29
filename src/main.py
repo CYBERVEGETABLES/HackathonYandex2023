@@ -1,16 +1,13 @@
 import os
 import uvicorn
 
-from database import init_db
+import database
 
 
 def main():
-    try:
-        os.makedirs('data')
-    except FileExistsError:
-        pass
+    os.makedirs('data/pkl', exist_ok=True)
 
-    init_db()
+    database.init()
 
     uvicorn.run(
         'server:app',
