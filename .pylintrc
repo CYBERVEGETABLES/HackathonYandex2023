@@ -5,4 +5,5 @@ disable=
     C0116, # missing-function-docstring
     C0201, # consider-iterating-dictionary
     R0903, # too-few-public-methods
+    E0401, # import-error (чтобы не качать все зависимости при CI/CD)
     W0511, # fix me
