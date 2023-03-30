@@ -6,7 +6,7 @@ from diary import DiaryNSO
 
 def create_user_diary(user_id) -> None:
     res = database.user_get_diary_data(user_id)
-    diary_login, diary_password = res 
+    diary_login, diary_password = res
     DIARIES[user_id] = DiaryNSO(diary_login, diary_password)
 
 

@@ -27,17 +27,22 @@ class DiaryNSO:
 
         self.login = login
         self.password = password
-        
+
+        self.all_marks = None
+        self.final_grades_per_module = None
+        self.next_day_homework = None
+        self.next_day_schedule = None
+
         Thread(target=self._update_controller).start()
-            
+
     def _update_controller(self) -> NoReturn:
         while True:
             threads = []
             for func in (
-                self.get_next_day_schedule,
-                self.get_next_day_homework,
-                self.get_final_grades_per_module,
-                self.get_all_marks
+                    self.get_next_day_schedule,
+                    self.get_next_day_homework,
+                    self.get_final_grades_per_module,
+                    self.get_all_marks
             ):
                 threads.append(Thread(target=func))
                 threads[-1].start()
@@ -79,9 +84,6 @@ class DiaryNSO:
         return True
 
     def get_next_day_schedule(self) -> None:
-        self.next_day_schedule = None
-        
-        response = ''
         tomorrow_date = get_tomorrow_date()
 
         print(444)
@@ -103,16 +105,12 @@ class DiaryNSO:
                 subjects = day.find_elements(By.CLASS_NAME, 'js-rt_licey-dnevnik-subject')
 
                 if len(subjects) == 0:
-                    return 'На завтра уроков не найдено'
+                    self.next_day_schedule = 'На завтра уроков не найдено'
 
-                response = 'Завтра у Вас будут следующие предметы:\n' + \
-                           '\n'.join([subject.text for subject in subjects])
-
-        self.next_day_schedule = response
+                self.next_day_schedule = 'Завтра у Вас будут следующие предметы:\n' + \
+                                         '\n'.join([subject.text for subject in subjects])
 
     def get_next_day_homework(self) -> None:
-        self.next_day_homework = None
-        
         response = ''
         tomorrow_date = get_tomorrow_date()
 
@@ -142,9 +140,9 @@ class DiaryNSO:
                     response += f'{subject}: {homework.text}\n'
 
         if response == '':
-            return 'Домашнего задания на завтра не найдено'
-
-        self.next_day_homework = f'Домашнее задание на завтра:\n{response}'
+            self.next_day_homework = 'Домашнего задания на завтра не найдено'
+        else:
+            self.next_day_homework = f'Домашнее задание на завтра:\n{response}'
 
     def get_final_grades_per_module(self) -> None:
         """ Это итоговые оценки по предметам за четверть без пустых хуёв
@@ -152,7 +150,6 @@ class DiaryNSO:
             сделали в виде списка, чтобы легче дальше было делать"""
         # АХВХАХВАХ СЕРЕГА ТЫ ЕБЛАН Я ТЕБЯ ОБОЖАЮ
         # А я ему помог)))
-        self.final_grades_per_module = None
 
         res = {}
 
@@ -175,8 +172,6 @@ class DiaryNSO:
         self.final_grades_per_module = res
 
     def get_all_marks(self) -> None:
-        self.all_marks = None
-        
         res = []
 
         if self.driver.current_url != 'https://school.nso.ru/journal-student-grades-action':

@@ -7,3 +7,5 @@ disable=
     R0903, # too-few-public-methods
     E0401, # import-error (чтобы не качать все зависимости при CI/CD)
     W0511, # fix me
+
+    W0613, # unused-argument (надо убрать, саня так код написал, что приходится добавить это)

@@ -24,7 +24,7 @@ def user_get_diary_data(user_id: str) -> tuple[str, str] | None:
     return res
 
 
-def db_init() -> None:
+def init() -> None:
     conn.execute(
         'CREATE TABLE IF NOT EXISTS users('
         'id TEXT PRIMARY KEY,'

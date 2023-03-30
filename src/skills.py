@@ -8,7 +8,7 @@ from diary import DiaryNSO
 from yandex_fuc import create_user_diary
 
 
-def check_registred(func: Callable) -> Callable:
+def check_registered(func: Callable) -> Callable:
     print(1)
     @wraps(func)
     def work_model(user_id, *arg, **kargs) -> Any:
@@ -20,7 +20,7 @@ def check_registred(func: Callable) -> Callable:
     return work_model
 
 
-@check_registred
+@check_registered
 def next_day_schedule(user_diary: DiaryNSO, *arg, **kargs) -> str:
     print('get_next_day_schedule')
     if not user_diary.next_day_schedule:
@@ -28,15 +28,14 @@ def next_day_schedule(user_diary: DiaryNSO, *arg, **kargs) -> str:
     return user_diary.get_next_day_schedule()
 
 
-@check_registred
+@check_registered
 def next_day_homework(user_diary: DiaryNSO, *arg, **kargs) -> str:
     print('get_next_day_homework')
     if not user_diary.next_day_schedule:
         return messages.MESSAGE_READY_MODEL_ERROR
     return user_diary.get_next_day_homework()
 
-
-@check_registred
-def get_marks_per_quote(user_diary: DiaryNSO, text: str | None = None, *arg, **kargs) -> str:
-    print('get_marks_per_quote')
-    pass
+# TODO
+# @check_registered
+# def get_marks_per_quote(user_diary: DiaryNSO, text: str | None = None, *arg, **kargs) -> str:
+#     print('get_marks_per_quote')

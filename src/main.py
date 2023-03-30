@@ -1,13 +1,13 @@
 import os
 import uvicorn
 
-from database import *
+import database
 
 
 def main():
     # os.makedirs('data/pkl', exist_ok=True)  # У Кирилл анихуя не работает с этой хуйней
 
-    db_init()
+    database.init()
 
     uvicorn.run(
         'server:app',
